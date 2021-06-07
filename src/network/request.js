@@ -22,7 +22,7 @@ export function request(config) {
     instance.interceptors.response.use(res => {
        return res.data
     }, err => {
-      console.log(err);
+      //console.log(err);
     })
 
     // 3.发送真正的网络请求  源码显示返回的本身就是Promise 所以直接返回下面那个

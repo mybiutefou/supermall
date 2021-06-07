@@ -1,6 +1,6 @@
 <template>
-<div class="content">
-  <scroll>
+<div>
+  <scroll  class="content">
     <ul>
       <li>个人信息1</li>
       <li>个人信息2</li>

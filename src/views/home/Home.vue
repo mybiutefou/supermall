@@ -2,7 +2,12 @@
   <div id="home" class="wrapper">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
-    <scroll class="content" ref="scroll" :porbe-type="3" @scroll="contentScroll">
+    <scroll class="content"
+            ref="scroll"
+            :porbe-type="3"
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="loadMore">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -11,7 +16,7 @@
                    @tabClick="tabClick" />
       <goods-list :goods="showGoods"/>
     </scroll>
-    <back-top @click.native="backClick"/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -51,7 +56,8 @@
          'new': {page: 0, list: []},
          'sell': {page: 0, list: []},
        },
-       currentType: 'pop'
+       currentType: 'pop',
+       isShowBackTop: false //保存变量决定是否显示
      }
   },
   computed: {
@@ -90,8 +96,15 @@
       this.$refs.scroll.scrollTo(0, 0)
     },
     //监听滚动位置
-    contentScroll() {
-
+    contentScroll(position) {
+      //打印出来全是负数，所以取相反数
+      // 当y轴到底一定位置则变 true
+      this.isShowBackTop = (-position.y) > 1000
+    },
+    //监听加载更多
+    loadMore() {
+      //调用之前方法 每次调用+1 so直接调用
+      this.getHomeGoods(this.currentType)
     },
     /**
      * 网络请求相关方法
@@ -110,6 +123,8 @@
         //特殊语法，将一个数组解析塞进另一个数组里面
         this.goods[type].list.push(...res.data.list)
         this.goods[type].page += 1
+
+        this.$refs.scroll.finishPullUp()
       })
     }
   }
