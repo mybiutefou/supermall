@@ -1,38 +1,17 @@
 <template>
-  <div id="home">
+  <div id="home" class="wrapper">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control class="tab-control"
-                 :titles="['流行', '新款', '精选']"
-                 @tabClick="tabClick" />
-    <goods-list :goods="showGoods"/>
-    <ul>
-      <li>列表1</li>
-      <li>列表2</li>
-      <li>列表3</li>
-      <li>列表4</li>
-      <li>列表5</li>
-      <li>列表6</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
 
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-      <li>列表7</li>
-    </ul>
+    <scroll class="content" ref="scroll" :porbe-type="3" @scroll="contentScroll">
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <tab-control class="tab-control"
+                   :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick" />
+      <goods-list :goods="showGoods"/>
+    </scroll>
+    <back-top @click.native="backClick"/>
   </div>
 </template>
 
@@ -44,9 +23,10 @@
 
   /*公共组件*/
   import NavBar from "@/components/common/navbar/NavBar"; //导航栏，屏幕最下方4大组件
-  import TabControl from "@/components/content/tabControl/TabControl";
-  import GoodsList from "@/components/content/goods/GoodsList";
-
+  import TabControl from "@/components/content/tabControl/TabControl"; // 切换商品
+  import GoodsList from "@/components/content/goods/GoodsList"; //商品展示
+  import Scroll from "@/components/common/scroll/Scroll"; //滚动
+  import BackTop from "@/components/content/backTop/BackTop"; //返回顶部图片
   /*数据*/
   import {getHomeMuleidata, getHomeGoods} from "@/network/home";
 
@@ -58,7 +38,9 @@
     FeatureView,
     NavBar,
     TabControl,
-    GoodsList
+    GoodsList,
+    Scroll,
+    BackTop
   },
   data() {
      return {
@@ -90,6 +72,7 @@
     /**
      * s事件监听相关方法
      */
+    //选项切换事件
     tabClick(index) {
       switch (index) {
         case 0:
@@ -101,6 +84,14 @@
         case 2:
           this.currentType = 'sell'
       }
+    },
+    //回到顶部
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0)
+    },
+    //监听滚动位置
+    contentScroll() {
+
     },
     /**
      * 网络请求相关方法
@@ -125,9 +116,12 @@
 }
 </script>
 
+<!--scoped 作用域 针对当前组件起效果-->
 <style scoped>
   #home {
-    padding-top: 44px;
+    /*padding-top: 44px;*/
+    height: 100vh; /*vh -->viewport height*/
+    position: relative;
   }
   .home-nav {
     background-color: var(--color-tint);
@@ -144,5 +138,22 @@
     position: sticky;
     top: 44px;
     z-index: 9;
+  }
+
+  /*第二种方法*/
+  /*.content {*/
+  /*  !*overflow: hidden;*! !*bug 隐藏后无法滚动*!*/
+
+  /*  position: absolute;*/
+  /*  top: 44px;*/
+  /*  bottom: 49px;*/
+  /*  left: 0;*/
+  /*  right: 0;*/
+  /*}*/
+  /*第一种方法*/
+  .content {
+     height: calc(100% - 93px);
+     overflow: hidden;
+     margin-top: 44px;
   }
 </style>
