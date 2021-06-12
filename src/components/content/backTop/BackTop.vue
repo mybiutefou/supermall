@@ -13,11 +13,11 @@ export default {
 <style scoped>
   .back-top {
     position: fixed;
-    right: 10px;
-    bottom: 50px;
+    right: 6px;
+    bottom: 55px;
   }
   .back-top img {
-    width: 43px;
-    height: 43px;
+    width: 40px;
+    height: 40px;
   }
 </style>
